@@ -1,31 +1,33 @@
 import mysql.connector as db
 import smtplib
 import random
-mydb=db.connect(host="localhost",passwd="mysql",user="root",database="apsjorhat")
+mydb=db.connect(host="localhost",passwd="root",user="root",database="sentimental_analysis")
 mycursor=mydb.cursor()
 
-
 def user_auth():
+    count=None
     email = input("Enter your email to login")
     fetch_query = "select * from reg_users;"
     mycursor.execute(fetch_query)
     for i in mycursor:
-        if i[1] == email:
+        if i[2] == email:
             print("Login Successful !")
+            import sentimental_analysis
             count = 1
             break
-    if count == 0:
+    if  count == 0:
         print("Login Error !")
-
+print("#"*88)
 print("******************* Enter 1 to LOGIN or 2 to REGISTER for new users *******************")
+print("#"*88)
 inp=int(input())
 count=0
 if inp==1:
    user_auth()
 
 elif inp==2:
-    name = input("Enter your name")
-    email = input("Enter your email")
+    name = input("ENTER YOUR NAME: ")
+    email = input("ENTER YOUR EMAIL: ")
     otp = str(random.randint(100000,1000000))
 
     SUBJECT = "OTP for Login"
@@ -41,10 +43,10 @@ elif inp==2:
 
     answer=int(input("Please enter the otp for verification"))
     if answer == int(otp) :
-        query = "insert into reg_users values('{}','{}');".format(name, email)
+        query = "insert into reg_users (name,email) values (" + "'" + name + "'"+"," + "'" + email + "'" + ");"
         mycursor.execute(query)
         mydb.commit()
-        print("You have been successfully registered. Now please follow the instructions to succesfully Login ")
+        print("You have been successfully registered. Now please follow the instructions to successfully Login ")
         user_auth()
 
     else:
